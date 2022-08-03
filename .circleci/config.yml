@@ -128,8 +128,8 @@ jobs:
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --output text >> ~/cdond-c3-projectstarter/.circleci/ansible/inventory.txt
-            cat ~/cdond-c3-projectstarter/.circleci/ansible/inventory.txt
+            --output text >> ~/.circleci/ansible/inventory.txt
+            cat ~/.circleci/ansible/inventory.txt
       - run:
           name: saving back-end URL to memory using memstash
           command: |
@@ -145,7 +145,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - cdond-c3-projectstarter/.circleci/ansible/inventory.txt
+            - .circleci/ansible/inventory.txt
 
 workflows:
   default:
