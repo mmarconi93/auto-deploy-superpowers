@@ -141,7 +141,7 @@ jobs:
             -H "token: 30a62300-1327-11ed-a313-0acfc9d5d249" \
             --request PUT \
             --data "http://${backend_url}:3030" \
-            https://api/memstash.io/values/backend_url
+            https://api.memstash.io/values/backend_url
       - persist_to_workspace:
           root: ~/
           paths:
