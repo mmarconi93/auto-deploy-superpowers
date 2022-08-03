@@ -124,6 +124,7 @@ jobs:
                 --tags project=udapeople
 
 workflows:
+  default:
     jobs:
       - build-frontend
       - build-backend
