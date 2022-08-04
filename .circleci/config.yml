@@ -193,8 +193,8 @@ jobs:
             pip install awscli
       - run:
           name: configure server
-          command: cd ./circleci/ansible && \
-            cat inventory.txt && \
+          command: |
+            cd ~/project/.circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment
 
