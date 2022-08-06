@@ -185,8 +185,8 @@ jobs:
           name: Install dependancies
           command: |
             apk add --update ansible
-            apk add --update tar gzip ansible nodejs npm curl && \
-            apk add --update bash
+            apk add --update --no-cache python3 py3-pip
+            /usr/local/bin/python -m pip install --upgrade pip 
             pip install awscli
       - run:
           name: configure server
@@ -365,8 +365,8 @@ workflows:
           requires: [build-frontend]
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-#      - configure-infrastructure:
-#          requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
 #      - run-migrations:
 #          requires: [configure-infrastructure]
 #      - deploy-frontend:
