@@ -208,7 +208,7 @@ jobs:
       - run:
           name: run migrations
           command: |
-            set-e
+            set -e
             cd backend
             export $(cat .env | xargs)
             npm run migrations > migrations_dump.txt
