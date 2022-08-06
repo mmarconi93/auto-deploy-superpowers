@@ -193,7 +193,7 @@ jobs:
           command: |
             cd ~/project/.circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
-            
+
       - destroy-environment
 
   run-migrations:
@@ -221,7 +221,7 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - run:
@@ -268,8 +268,6 @@ jobs:
           name: install dependencies
           command: |
             apk add --update tar gzip ansible nodejs npm curl openssh-client
-            apk add --update --no-cache python3 py3-pip
-            /usr/local/bin/python -m pip install --upgrade pip
             pip install awscli
       - run:
           name: deploy backend
@@ -288,7 +286,6 @@ jobs:
             npm i
             npm run build
             cd ..
-            pwd
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
@@ -305,21 +302,10 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            apk add --update --no-cache \
-              npm \
-              curl \
-              nodejs \
-              python \
-              py3-pip
-              && pip3 install --upgrade pip \
-              && pip install awscli \      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [deploy-frontend]
-      - smoke-test:
-          requires: [deploy-backend]
+            apk add --update npm nodejs curl
+            apk add --update --no-cache python3 py3-pip
+            /usr/local/bin/python -m pip install --upgrade pip 
+            pip install awscli
       - run:
           name: export backend url
           command: |
@@ -368,11 +354,11 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-#      - run-migrations:
-#          requires: [configure-infrastructure]
-#      - deploy-frontend:
-#          requires: [run-migrations]
-#      - deploy-backend:
-#          requires: [deploy-frontend]
-#      - smoke-test:
-#          requires: [deploy-backend]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend]
