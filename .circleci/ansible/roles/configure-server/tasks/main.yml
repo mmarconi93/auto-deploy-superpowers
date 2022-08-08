@@ -14,19 +14,19 @@
 - name: upgrade all packages
   become: true
   apt:
-    upgrade: "yes"
+    upgrade: yes
 
 - name: install nodejs npm
   become: true
   apt:
     name: ["nodejs", "npm"]
     state: latest
-    update_cache: "yes"
+    update_cache: yes
 
 - name: install pm2
   become: true
   apt:
     name: pm2
-    global: "yes"
-    production: "yes"
+    global: yes
+    production: yes
     state: present
