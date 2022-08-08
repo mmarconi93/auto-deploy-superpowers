@@ -14,7 +14,7 @@
 - name: upgrade all packages
   become: true
   apt:
-    upgrade: yes
+    upgrade: "yes"
 
 - name: install nodejs npm
   become: true

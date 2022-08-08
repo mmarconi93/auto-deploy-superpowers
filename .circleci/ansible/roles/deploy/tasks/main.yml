@@ -1,11 +1,11 @@
-- name: Unarchive artifact
-  become: true
-  unarchive: 
+- name: "Unarchive artifact"
+  become: yes
+  unarchive:
     src: files/artifact.tar.gz
     dest: .
 
-- name: start app 
-  become: true
+- name: "start app"
+  become: yes
   shell: |
     npm install
-    sudo pm2 start npm --start 
+    sudo pm2 start npm --start
