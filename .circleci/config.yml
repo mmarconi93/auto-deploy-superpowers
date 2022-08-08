@@ -76,16 +76,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [test-frontend]
       - run:
           name: Run frontend test
           command: |
             cd frontend
             npm install
             npm run test
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
 
   test-backend:
     docker:
@@ -93,16 +90,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [test-backend]
       - run:
           name: Run backend test
           command: |
             cd backend
             npm install
             npm run test
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
 
   scan-frontend:
     docker:
@@ -110,7 +104,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [scan-frontend]
       - run:
           name: frontend-scan
           command: |
@@ -124,7 +118,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [scan-backend]
       - run:
           name: backend-scan
           command: |
@@ -163,8 +157,8 @@ jobs:
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --output text >> .circleci/ansible/inventory.txt &&
-            echo `cat .circleci/ansible/inventory.txt`
+              --output text >> ~/project/.circleci/ansible/inventory.txt &&
+            cat ~/project/.circleci/ansible/inventory.txt
 
       - persist_to_workspace:
           root: ~/
@@ -176,18 +170,18 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
         environment:
-          - NODE_ENV: "{{ lookup('env','NODE_ENV') }}"
-          - VERSION: "{{ lookup('env','VERSION') }}"
-          - ENVIRONMENT: "{{ lookup('env','ENVIRONMENT') }}"
-          - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-          - TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES') }}"
-          - TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-          - TYPEORM_PORT: 5432
-          - TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-          - TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-          - TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
-          - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS') }}"
-          - TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR') }}"
+          NODE_ENV: "{{ lookup('env','NODE_ENV') }}"
+          VERSION: "{{ lookup('env','VERSION') }}"
+          ENVIRONMENT: "{{ lookup('env','ENVIRONMENT') }}"
+          TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+          TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES') }}"
+          TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+          TYPEORM_PORT: 5432
+          TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+          TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+          TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+          TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS') }}"
+          TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR') }}"
     steps:
       - checkout
       - add_ssh_keys:
@@ -205,7 +199,8 @@ jobs:
           name: configure server
           command: |
             set -e
-            cd ~/project/.circleci/ansible
+            cd ~/project/.circleci/ansible && \
+            cat inventory.txt && \
             ansible-playbook -i inventory.txt configure-server.yml
 
       - destroy-environment
@@ -215,18 +210,23 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
+      - run:
+          name: install dependencies
+          command: |
+            sudo apt update && upgrade
+            sudo apt -y install awscli
       - restore_cache:
           keys: [backend-build]
+      - attach_workspace:
+          at: ~/
       - run:
           name: run migrations
           command: |
             set -e
             cd backend
             pwd
-            export $(cat .env | xargs)
-            npm run migrations > migrations_dump.txt
+            npm install 
+            npm run migrations > ~/project/backend/migrations_dump.txt
             cat migrations_dump.txt
 
       - run:

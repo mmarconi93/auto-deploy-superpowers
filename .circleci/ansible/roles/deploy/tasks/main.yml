@@ -1,15 +1,11 @@
-- name: Move backend into server
-  copy:
-    src: /root/project/backend_artifact.tar.gz
-    dest: ~/home/ubuntu
+- name: Unarchive artifact
+  become: true
+  unarchive: 
+    src: files/artifact.tar.gz
+    dest: .
 
-- name: Install dependencies
+- name: start app 
+  become: true
   shell: |
-    cd ~/home/ubuntu
-    tar -xzvf backend_artifact.tar.gz -C backend
-    rm backend_artifact.tar.gz
-    cd backend
     npm install
-    npm run build
-    pm2 stop default
-    pm2 start npm --name backend -- start
+    sudo pm2 start npm --start 
