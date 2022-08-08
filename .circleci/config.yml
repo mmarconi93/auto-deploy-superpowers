@@ -213,7 +213,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            sudo apt-get update && upgrade
+            sudo apt-get update
             sudo apt-get -y install awscli
       - restore_cache:
           keys: [backend-build]
