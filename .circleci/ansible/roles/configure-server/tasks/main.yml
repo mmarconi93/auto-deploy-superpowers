@@ -5,10 +5,10 @@
     name: python3-software-properties
     state: present
 
-- name: install deadsnakes repo 
-become: true 
-apt_repository:
-  repo: 'ppa:deadsnakes/ppa'
+- name: install deadsnakes repo
+  become: true
+  apt_repository:
+    repo: "ppa:deadsnakes/ppa"
 
 - name: install python
   become: true
