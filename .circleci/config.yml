@@ -176,7 +176,9 @@ jobs:
       - run:
           name: Install dependancies
           command: |
-            apk add --update --no-cache ansible tar gzip
+            apk add curl 
+            apk add --upgrade bash
+            apk add --update --no-cache ansible
             pip install awscli
       - add_ssh_keys:
           fingerprints: ["bf:02:77:1f:dc:b3:1e:f2:45:dc:dc:2d:ac:6c:86:4f"]
