@@ -1,11 +1,26 @@
-- name: "Unarchive artifact"
-  become: yes
+---
+- name: create backend directory
+  file:
+    path: ~/backend-app
+    state: directory
+- name: unarchive backend files
   unarchive:
-    src: files/artifact.tar.gz
-    dest: .
-
-- name: "start app"
-  become: yes
+    src: artifact.tar.gz
+    dest: ~/backend-app
+- name: install dependencies
   shell: |
-    npm install
-    sudo pm2 start npm --start
+    cd ~/backend-app
+    npm i
+- name: node app with pm2
+  shell: |
+    cd ~/backend-app/dist
+    pm2 stop default
+    pm2 start main.js
+  register: execute_node
+- name: print message
+  debug:
+    msg: "{{ execute_node.stdout_lines }}"
+- name: configure pm2
+  become: true
+  shell: |
+    env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu

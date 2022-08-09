@@ -1,20 +1,8 @@
 ---
-- name: install dependencies
+- name: add nodejs from Nodesource
   become: true
-  apt:
-    name: python3-software-properties
-    state: present
-
-- name: install deadsnakes repo
-  become: true
-  apt_repository:
-    repo: "ppa:deadsnakes/ppa"
-
-- name: install python
-  become: true
-  apt:
-    name: python3
-    state: present
+  shell: |
+    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 
 - name: upgrade all packages
   become: true
@@ -33,5 +21,3 @@
   npm:
     name: pm2
     global: yes
-    production: yes
-    state: present
