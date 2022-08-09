@@ -187,7 +187,7 @@ jobs:
           command: |
             set -e
             cd ~/project/backend/
-            cat<<EOF > .env
+            cat \<<EOF > .env
               NODE_ENV=production
               TYPEORM_CONNECTION=$TYPEORM_CONNECTION
               TYPEORM_DATABASE=$TYPEORM_DATABASE
