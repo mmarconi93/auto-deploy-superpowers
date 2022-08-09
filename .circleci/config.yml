@@ -176,14 +176,11 @@ jobs:
       - run:
           name: Install dependancies
           command: |
-            apk add --update ansible
-            apk add --update --no-cache python3 py3-pip
-            /usr/local/bin/python -m pip install --upgrade pip 
+            apk add --update --no-cache ansible tar gzip
             pip install awscli
       - run:
           name: configure server
           command: |
-            set -e
             cd ~/project/backend/
             cat \<<EOF > .env
               NODE_ENV=production
