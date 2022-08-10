@@ -3,10 +3,12 @@
   file:
     path: ~/backend-app
     state: directory
+
 - name: unarchive backend files
   unarchive:
     src: artifact.tar.gz
     dest: ~/backend-app
+
 - name: install dependencies
   shell: |
     cd ~/backend-app
@@ -17,9 +19,11 @@
     pm2 stop default
     pm2 start main.js
   register: execute_node
+
 - name: print message
   debug:
     msg: "{{ execute_node.stdout_lines }}"
+
 - name: configure pm2
   become: true
   shell: |

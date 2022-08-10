@@ -9,14 +9,24 @@
   apt:
     upgrade: "yes"
 
-- name: install nodejs npm
+- name: install nodejs
   become: true
   apt:
-    name: ["nodejs"]
+    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
+- name: install n
+    become: yes
+    npm:
+      name: n
+      global: yes
+      production: yes
+
 - name: install pm2
+  become: true 
   npm:
-    name: pm2 -g
+    name: pm2
     global: yes
+    production: yes
+    state: present 
