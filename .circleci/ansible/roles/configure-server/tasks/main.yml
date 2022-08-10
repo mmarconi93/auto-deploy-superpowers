@@ -17,16 +17,16 @@
     update_cache: yes
 
 - name: install n
-    become: yes
-    npm:
-      name: n
-      global: yes
-      production: yes
+  become: yes
+  npm:
+    name: n
+    global: yes
+    production: yes
 
 - name: install pm2
-  become: true 
+  become: true
   npm:
     name: pm2
     global: yes
     production: yes
-    state: present 
+    state: present
