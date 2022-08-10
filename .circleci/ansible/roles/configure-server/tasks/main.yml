@@ -18,5 +18,5 @@
 
 - name: install pm2
   npm:
-    name: pm2
+    name: pm2 -g
     global: yes
