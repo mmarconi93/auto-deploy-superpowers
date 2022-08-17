@@ -200,6 +200,11 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
+          name: install dependencies 
+          command: |
+            sudo apt-get update
+            sudo apt-get -y install awscli
+      - run:
           name: run migrations
           command: |
             set -e
