@@ -194,14 +194,9 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0
+      - image: sleavely/node-awscli.14x
     steps:
       - checkout
-      - run:
-          name: install dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get -y install awscli
       - run:
           name: run migrations
           command: |
