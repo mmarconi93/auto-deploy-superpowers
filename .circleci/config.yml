@@ -173,6 +173,8 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependancies
           command: |
@@ -182,8 +184,6 @@ jobs:
             pip install awscli
       - add_ssh_keys:
           fingerprints: ["bf:02:77:1f:dc:b3:1e:f2:45:dc:dc:2d:ac:6c:86:4f"]
-      - attach_workspace:
-          at: ~/
       - run:
           name: configure server
           command: |
@@ -194,9 +194,11 @@ jobs:
 
   run-migrations:
     docker:
-      - image: sleavely/node-awscli.14x
+      - image: circleci/node:13.8.0
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - run:
           name: run migrations
           command: |
@@ -204,6 +206,7 @@ jobs:
             cd backend
             npm install 
             npm run migrations > migrations_dump.txt
+            cat migrations_dump.txt
       - run:
           name: Send migration status to kvdb.io
           command: |
