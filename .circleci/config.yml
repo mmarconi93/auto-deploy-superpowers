@@ -182,7 +182,7 @@ jobs:
             apk add --update --no-cache ansible
             pip install awscli
       - add_ssh_keys:
-          fingerprints: ["bf:02:77:1f:dc:b3:1e:f2:45:dc:dc:2d:ac:6c:86:4f"]
+          fingerprints: ["50:71:d8:c2:3e:ed:06:e7:cf:d1:b1:43:27:9e:0b:e7"]
       - attach_workspace:
           at: ~/
       - run:
